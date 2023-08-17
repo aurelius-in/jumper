@@ -23,12 +23,8 @@
         .platform {
             position: absolute;
             height: 10px;
-            width: 66%; 
+            width: 66%;
             background-color: #2d2d2d;
-        }
-
-        #invisible-platform {
-            visibility: hidden;
         }
 
         #guy {
@@ -45,15 +41,38 @@
             transform: scaleX(-1);
         }
 
-        #jacket {
+        #jacket, #shades {
             position: absolute;
+            left: calc(50% - 32px); 
+        }
+
+        #jacket {
             width: 64px;
             height: 64px;
             background-image: url('jacket.png');
             background-size: cover;
-            top: 64px; 
-            left: calc(50% - 32px); 
+            top: 64px;
         }
+
+        #shades {
+            display: none; /* initially hidden */
+            width: 64px;
+            height: 30px;
+            background-image: url('shades.png');
+            background-size: cover;
+            top: 64px;
+        }
+
+        @keyframes rainbow {
+            0% { background-color: red; }
+            16% { background-color: orange; }
+            32% { background-color: yellow; }
+            48% { background-color: green; }
+            64% { background-color: blue; }
+            80% { background-color: indigo; }
+            100% { background-color: violet; }
+        }
+
     </style>
 </head>
 
@@ -64,25 +83,28 @@
         <div class="platform" style="bottom: 250px; right: 0;"></div>
         <div class="platform" style="bottom: 375px; left: 0;"></div>
         <div class="platform" style="bottom: 500px; right: 0;"></div>
-        <div class="platform" id="invisible-platform" style="bottom: 605px; left: calc(50% - 33%);"></div> 
+        <div class="platform" style="bottom: 605px; left: calc(50% - 33%);"></div> <!-- Adjusted height for jacket/shades platform -->
 
         <div id="jacket"></div>
+        <div id="shades"></div>
         <div id="guy"></div>
     </div>
 
     <script>
-        let jumper = document.getElementById("guy");
-        let jacket = document.getElementById("jacket");
+        const jumper = document.getElementById("guy");
+        const jacket = document.getElementById("jacket");
+        const shades = document.getElementById("shades");
+        const gameArea = document.getElementById("gameArea");
         let isJumping = false;
-        let jumpHeight = 160;
+        const jumpHeight = 160;
 
         function jump(event) {
             if (!isJumping) {
                 isJumping = true;
-                let initialLeft = jumper.offsetLeft;
-                let targetX = event.clientX;
-                let direction = (targetX > initialLeft + 32) ? 1 : -1; 
-                let moveBy = direction * 80;
+                const initialLeft = jumper.offsetLeft;
+                const targetX = event.clientX;
+                const direction = (targetX > initialLeft + 32) ? 1 : -1;
+                const moveBy = direction * 80;
 
                 if(direction === 1) {
                     jumper.classList.add("flipped");
@@ -102,27 +124,39 @@
 
         function descend(initialTop) {
             jumper.style.transition = "bottom 0.5s ease-in";
-            let platforms = document.querySelectorAll('.platform');
+            const platforms = document.querySelectorAll('.platform');
             let landingPlatform = null;
 
             for(let platform of platforms) {
-                let platformTop = parseInt(getComputedStyle(platform).bottom) + 10;
+                const platformTop = parseInt(getComputedStyle(platform).bottom) + 10;
                 if(platformTop < initialTop && (!landingPlatform || platformTop > parseInt(getComputedStyle(landingPlatform).bottom))) {
                     landingPlatform = platform;
                 }
             }
 
             if(landingPlatform) {
-                let newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
-                
-                // When he gets the jacket, let him continue falling
-                if (landingPlatform.id === "invisible-platform") {
+                const newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
+                jumper.style.bottom = newBottom + "px";
+
+                if(landingPlatform.style.bottom === "605px" && jacket.style.display !== "none") {
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
                     jacket.style.display = "none";
-                    newBottom = 10; // All the way to the bottom
+                    gameArea.style.animation = "rainbow 2s linear";
+
+                    setTimeout(() => {
+                        gameArea.style.animation = "none";
+                        gameArea.style.backgroundImage = "url('bg.jpg')";
+                        shades.style.display = "block";
+                    }, 2000);
                 }
 
-                jumper.style.bottom = newBottom + "px";
+                if(landingPlatform.style.bottom === "605px" && shades.style.display !== "none" && jumper.style.backgroundImage.includes("jacket-guy.png")) {
+                    jumper.style.backgroundImage = "url('shades-guy.png')";
+                    shades.style.display = "none";
+                    setTimeout(() => {
+                        jumper.style.bottom = "10px";
+                    }, 500);
+                }
 
                 setTimeout(() => {
                     isJumping = false;
@@ -136,4 +170,5 @@
         }
     </script>
 </body>
+
 </html>
