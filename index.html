@@ -41,9 +41,9 @@
 <body>
     <div id="gameArea" onclick="jump(event)">
         <div class="platform" style="bottom: 0; width: 100%;"></div> <!-- Bottom platform -->
-        <div class="platform" style="bottom: 200px; width: 33%; left: 0;"></div>
-        <div class="platform" style="bottom: 400px; width: 33%; left: 66%;"></div>
-        <div class="platform" style="bottom: 600px; width: 33%; left: 0;"></div>
+        <div class="platform" style="bottom: 190px; width: 33%; left: 0;"></div> <!-- Decreased by 10px -->
+        <div class="platform" style="bottom: 390px; width: 33%; left: 66%;"></div> <!-- Decreased by 10px -->
+        <div class="platform" style="bottom: 590px; width: 33%; left: 0;"></div> <!-- Decreased by 10px -->
         <!-- Add more platforms as necessary -->
 
         <div id="guy"></div>
@@ -52,7 +52,7 @@
     <script>
         let jumper = document.getElementById("guy");
         let isJumping = false;
-        let jumpHeight = 190; // Adjusted jump height 
+        let jumpHeight = 200; // Increased by 10px
 
         function jump(event) {
             if (!isJumping) {
