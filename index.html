@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +14,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            background-image: url('bg.jpg'); /* Background Image */
+            background-image: url('bg.jpg');
             background-size: cover;
             background-repeat: no-repeat;
         }
@@ -23,8 +22,12 @@
         .platform {
             position: absolute;
             height: 10px;
-            width: 66%; /* Platform width */
-            background-color: #2d2d2d; /* Black platforms */
+            width: 66%; 
+            background-color: #2d2d2d;
+        }
+
+        #invisible-platform {
+            visibility: hidden; /* Make the platform invisible */
         }
 
         #guy {
@@ -42,26 +45,24 @@
         }
 
         #jacket {
-    position: absolute;
-    width: 64px;  /* Width of #guy */
-    height: 64px; /* Same as width for 1:1 aspect ratio */
-    background-image: url('jacket.png');
-    background-size: cover;
-    top: 64px;    /* 128px (height of #guy) - 64px (height of #jacket) */
-    left: calc(50% - 32px); /* Centered */
-}
-
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            background-image: url('jacket.png');
+            background-size: cover;
+            top: 64px; 
+            left: calc(50% - 32px); 
+        }
     </style>
 </head>
-
 <body>
     <div id="gameArea" onclick="jump(event)">
-        <div class="platform" style="bottom: 0; width: 100%;"></div> <!-- Bottom platform -->
+        <div class="platform" style="bottom: 0; width: 100%;"></div>
         <div class="platform" style="bottom: 125px; left: 0;"></div>
         <div class="platform" style="bottom: 250px; right: 0;"></div>
         <div class="platform" style="bottom: 375px; left: 0;"></div>
         <div class="platform" style="bottom: 500px; right: 0;"></div>
-        <div class="platform" style="bottom: 625px; left: calc(50% - 16.5%);"></div> <!-- Middle platform for jacket -->
+        <div class="platform" id="invisible-platform" style="bottom: 605px; left: calc(50% - 33%);"></div> 
 
         <div id="jacket"></div>
         <div id="guy"></div>
@@ -71,7 +72,7 @@
         let jumper = document.getElementById("guy");
         let jacket = document.getElementById("jacket");
         let isJumping = false;
-        let jumpHeight = 160; // Adjusted for new platform heights
+        let jumpHeight = 160;
 
         function jump(event) {
             if (!isJumping) {
@@ -79,9 +80,8 @@
                 let initialLeft = jumper.offsetLeft;
                 let targetX = event.clientX;
                 let direction = (targetX > initialLeft + 32) ? 1 : -1; 
-                let moveBy = direction * 80; // Adjusted movement distance
+                let moveBy = direction * 80;
 
-                // Flip the jumper's image based on direction
                 if(direction === 1) {
                     jumper.classList.add("flipped");
                 } else {
@@ -94,7 +94,7 @@
 
                 setTimeout(() => {
                     descend(parseInt(getComputedStyle(jumper).bottom));
-                }, 500); // Time to reach the jump peak
+                }, 500);
             }
         }
 
@@ -103,29 +103,26 @@
             let platforms = document.querySelectorAll('.platform');
             let landingPlatform = null;
 
-            // Check for the platform to land on
             for(let platform of platforms) {
-                let platformTop = parseInt(getComputedStyle(platform).bottom) + 10; // 10 is platform height
+                let platformTop = parseInt(getComputedStyle(platform).bottom) + 10;
                 if(platformTop < initialTop && (!landingPlatform || platformTop > parseInt(getComputedStyle(landingPlatform).bottom))) {
                     landingPlatform = platform;
                 }
             }
 
             if(landingPlatform) {
-                let newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10; // 10 is platform height
+                let newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
                 jumper.style.bottom = newBottom + "px";
 
-                // Check if jumper reached the jacket
-                if(landingPlatform.style.bottom === "750px") {
+                if(landingPlatform.id === "invisible-platform") {
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
-                    jacket.style.display = "none"; // Hide the jacket
+                    jacket.style.display = "none";
                 }
 
                 setTimeout(() => {
                     isJumping = false;
                 }, 500);
             } else {
-                // If no landing platform is found, continue descending
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
                     descend(parseInt(getComputedStyle(jumper).bottom));
@@ -134,5 +131,4 @@
         }
     </script>
 </body>
-
 </html>
