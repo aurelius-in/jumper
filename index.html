@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,7 @@
         }
 
         #invisible-platform {
-            visibility: hidden; /* Make the platform invisible */
+            visibility: hidden;
         }
 
         #guy {
@@ -55,6 +56,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="gameArea" onclick="jump(event)">
         <div class="platform" style="bottom: 0; width: 100%;"></div>
@@ -112,12 +114,15 @@
 
             if(landingPlatform) {
                 let newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
-                jumper.style.bottom = newBottom + "px";
-
-                if(landingPlatform.id === "invisible-platform") {
+                
+                // When he gets the jacket, let him continue falling
+                if (landingPlatform.id === "invisible-platform") {
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
                     jacket.style.display = "none";
+                    newBottom = 10; // All the way to the bottom
                 }
+
+                jumper.style.bottom = newBottom + "px";
 
                 setTimeout(() => {
                     isJumping = false;
