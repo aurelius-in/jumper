@@ -42,14 +42,15 @@
         }
 
         #jacket {
-            position: absolute;
-            width: 64px;
-            height: 128px;
-            background-image: url('jacket.png');
-            background-size: cover;
-            top: 0;
-            left: calc(50% - 32px);
-        }
+    position: absolute;
+    width: 64px;  /* Width of #guy */
+    height: 64px; /* Same as width for 1:1 aspect ratio */
+    background-image: url('jacket.png');
+    background-size: cover;
+    top: 64px;    /* 128px (height of #guy) - 64px (height of #jacket) */
+    left: calc(50% - 32px); /* Centered */
+}
+
     </style>
 </head>
 
