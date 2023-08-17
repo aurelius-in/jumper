@@ -173,7 +173,11 @@ function descend(initialTop) {
     }
 }
 
-
+if(hasJacket && landingPlatform.style.bottom === "605px" && shades.style.display !== "none") {
+    jumper.style.backgroundImage = "url('shades-guy.png')";
+    shades.style.display = "none";
+    window.location.href = "hat.html"; // Redirect to the new game level
+}
     </script>
 </body>
 
