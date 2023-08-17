@@ -23,7 +23,7 @@
         .platform {
             position: absolute;
             height: 10px;
-            width: 33%; /* Platform width adjusted */
+            width: 33%; /* Platform width */
             background-color: #2d2d2d; /* Black platforms */
         }
 
@@ -35,6 +35,10 @@
             background-size: cover;
             bottom: 10px;
             left: calc(50% - 32px);
+        }
+
+        .flipped {
+            transform: scaleX(-1);
         }
 
         #jacket {
@@ -75,6 +79,13 @@
                 let targetX = event.clientX;
                 let direction = (targetX > initialLeft + 32) ? 1 : -1; 
                 let moveBy = direction * 80; // Adjusted movement distance
+
+                // Flip the jumper's image based on direction
+                if(direction === 1) {
+                    jumper.classList.add("flipped");
+                } else {
+                    jumper.classList.remove("flipped");
+                }
 
                 jumper.style.transition = "bottom 0.5s ease-out, left 0.5s linear";
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) + jumpHeight) + "px";
