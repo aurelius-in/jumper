@@ -23,7 +23,7 @@
         .platform {
             position: absolute;
             height: 10px;
-            width: 25px; /* Platform width */
+            width: 33%; /* Platform width adjusted */
             background-color: #2d2d2d; /* Black platforms */
         }
 
@@ -36,26 +36,38 @@
             bottom: 10px;
             left: calc(50% - 32px);
         }
+
+        #jacket {
+            position: absolute;
+            width: 64px;
+            height: 128px;
+            background-image: url('jacket.png');
+            background-size: cover;
+            top: 0;
+            left: calc(100% - 64px);
+        }
     </style>
 </head>
 
 <body>
     <div id="gameArea" onclick="jump(event)">
         <div class="platform" style="bottom: 0; width: 100%;"></div> <!-- Bottom platform -->
-        <div class="platform" style="bottom: 180px; left: 0;"></div>
-        <div class="platform" style="bottom: 360px; left: calc(50% - 12.5px);"></div>
-        <div class="platform" style="bottom: 540px; right: 0;"></div>
-        <div class="platform" style="bottom: 720px; left: 0;"></div>
-        <div class="platform" style="bottom: 900px; left: calc(50% - 12.5px);"></div>
+        <div class="platform" style="bottom: 150px; left: 0;"></div>
+        <div class="platform" style="bottom: 300px; right: 0;"></div>
+        <div class="platform" style="bottom: 450px; left: 0;"></div>
+        <div class="platform" style="bottom: 600px; right: 0;"></div>
+        <div class="platform" style="bottom: 750px; left: 0;"></div>
         <!-- Add more platforms as necessary -->
 
+        <div id="jacket"></div>
         <div id="guy"></div>
     </div>
 
     <script>
         let jumper = document.getElementById("guy");
+        let jacket = document.getElementById("jacket");
         let isJumping = false;
-        let jumpHeight = 210; // Slightly adjusted for new platform heights
+        let jumpHeight = 160; // Adjusted for new platform heights
 
         function jump(event) {
             if (!isJumping) {
@@ -65,18 +77,18 @@
                 let direction = (targetX > initialLeft + 32) ? 1 : -1; 
                 let moveBy = direction * 80; // Adjusted movement distance
 
-                jumper.style.transition = "bottom 0.25s ease-out, left 0.25s linear";
+                jumper.style.transition = "bottom 0.5s ease-out, left 0.5s linear";
                 jumper.style.bottom = (parseInt(jumper.style.bottom) + jumpHeight) + "px";
                 jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
 
                 setTimeout(() => {
                     descend(parseInt(jumper.style.bottom));
-                }, 250); // Time to reach the jump peak
+                }, 500); // Time to reach the jump peak
             }
         }
 
         function descend(initialTop) {
-            jumper.style.transition = "bottom 0.25s ease-in";
+            jumper.style.transition = "bottom 0.5s ease-in";
             let platforms = document.querySelectorAll('.platform');
             let landingPlatform = null;
 
@@ -91,9 +103,16 @@
             if(landingPlatform) {
                 let newBottom = parseInt(landingPlatform.style.bottom) + 10; // 10 is platform height
                 jumper.style.bottom = newBottom + "px";
+
+                // Check if jumper reached the jacket
+                if(landingPlatform.style.bottom === "750px") {
+                    jumper.style.backgroundImage = "url('jacket-guy.png')";
+                    jacket.style.display = "none"; // Hide the jacket
+                }
+
                 setTimeout(() => {
                     isJumping = false;
-                }, 250);
+                }, 500);
             } else {
                 // If no landing platform is found, continue descending
                 jumper.style.bottom = (parseInt(jumper.style.bottom) - 10) + "px";
