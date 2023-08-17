@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumping Guy Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff; /* White background */
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .platform {
+            position: absolute;
+            width: 100px;
+            height: 10px;
+            background-color: #2d2d2d;
+        }
+
+        #guy {
+            position: absolute;
+            width: 64px;
+            height: 128px;
+            background-image: url('guy.png');
+            background-size: cover;
+            bottom: 0;
+            left: calc(50% - 32px); /* Centers the character */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="gameArea">
+        <div class="platform" style="bottom: 140px; left: 10%;"></div>
+        <div class="platform" style="bottom: 280px; left: 40%;"></div>
+        <div class="platform" style="bottom: 420px; left: 70%;"></div>
+        <!-- Add more platforms as necessary -->
+
+        <div id="guy"></div>
+    </div>
+    <!-- For actual gameplay, consider integrating JavaScript for character movement, jumping mechanics, and collision detection. -->
+</body>
+
+</html>
