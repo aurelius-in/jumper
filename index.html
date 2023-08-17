@@ -55,12 +55,12 @@
         }
 
         #shades {
-            display: none; /* initially hidden */
-            width: 64px;
-            height: 30px;
+            display: none; 
+            width: 32px;
+            height: 15px;
             background-image: url('shades.png');
             background-size: cover;
-            top: 64px;
+            top: 86px; 
         }
 
         @keyframes rainbow {
@@ -83,7 +83,7 @@
         <div class="platform" style="bottom: 250px; right: 0;"></div>
         <div class="platform" style="bottom: 375px; left: 0;"></div>
         <div class="platform" style="bottom: 500px; right: 0;"></div>
-        <div class="platform" style="bottom: 605px; left: calc(50% - 33%);"></div> <!-- Adjusted height for jacket/shades platform -->
+        <div class="platform" style="bottom: 605px; left: calc(50% - 33%);"></div>
 
         <div id="jacket"></div>
         <div id="shades"></div>
@@ -97,6 +97,7 @@
         const gameArea = document.getElementById("gameArea");
         let isJumping = false;
         const jumpHeight = 160;
+        let hasJacket = false;
 
         function jump(event) {
             if (!isJumping) {
@@ -141,21 +142,22 @@
                 if(landingPlatform.style.bottom === "605px" && jacket.style.display !== "none") {
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
                     jacket.style.display = "none";
+                    hasJacket = true;
                     gameArea.style.animation = "rainbow 2s linear";
 
                     setTimeout(() => {
                         gameArea.style.animation = "none";
                         gameArea.style.backgroundImage = "url('bg.jpg')";
-                        shades.style.display = "block";
                     }, 2000);
+
+                    setTimeout(() => {
+                        shades.style.display = "block";
+                    }, 3000);
                 }
 
-                if(landingPlatform.style.bottom === "605px" && shades.style.display !== "none" && jumper.style.backgroundImage.includes("jacket-guy.png")) {
+                if(hasJacket && landingPlatform.style.bottom === "605px" && shades.style.display !== "none") {
                     jumper.style.backgroundImage = "url('shades-guy.png')";
                     shades.style.display = "none";
-                    setTimeout(() => {
-                        jumper.style.bottom = "10px";
-                    }, 500);
                 }
 
                 setTimeout(() => {
