@@ -59,7 +59,8 @@
             width: 32px;
             height: 15px;
             background-image: url('shades.png');
-            background-size: cover;
+            background-size: contain;
+            background-repeat: no-repeat;
             top: 86px; 
         }
 
@@ -83,7 +84,7 @@
         <div class="platform" style="bottom: 250px; right: 0;"></div>
         <div class="platform" style="bottom: 375px; left: 0;"></div>
         <div class="platform" style="bottom: 500px; right: 0;"></div>
-        <div class="platform" style="bottom: 605px; left: calc(50% - 33%);"></div>
+        <div class="platform" style="bottom: 605px; left: calc(50% - 33%); background-color: transparent;"></div>
 
         <div id="jacket"></div>
         <div id="shades"></div>
@@ -143,15 +144,15 @@
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
                     jacket.style.display = "none";
                     hasJacket = true;
-                    gameArea.style.animation = "rainbow 2s linear";
+                    gameArea.style.animation = "rainbow 3s linear";
 
                     setTimeout(() => {
                         gameArea.style.animation = "none";
                         gameArea.style.backgroundImage = "url('bg.jpg')";
-                    }, 2000);
-
-                    setTimeout(() => {
-                        shades.style.display = "block";
+                        jumper.style.bottom = "10px";
+                        setTimeout(() => {
+                            shades.style.display = "block";
+                        }, 2000);
                     }, 3000);
                 }
 
