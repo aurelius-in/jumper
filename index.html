@@ -44,7 +44,7 @@
             background-image: url('jacket.png');
             background-size: cover;
             top: 0;
-            left: calc(100% - 64px);
+            left: calc(50% - 32px);
         }
     </style>
 </head>
@@ -56,8 +56,7 @@
         <div class="platform" style="bottom: 300px; right: 0;"></div>
         <div class="platform" style="bottom: 450px; left: 0;"></div>
         <div class="platform" style="bottom: 600px; right: 0;"></div>
-        <div class="platform" style="bottom: 750px; left: 0;"></div>
-        <!-- Add more platforms as necessary -->
+        <div class="platform" style="bottom: 750px; left: calc(50% - 16.5%);"></div> <!-- Middle platform for jacket -->
 
         <div id="jacket"></div>
         <div id="guy"></div>
@@ -78,11 +77,11 @@
                 let moveBy = direction * 80; // Adjusted movement distance
 
                 jumper.style.transition = "bottom 0.5s ease-out, left 0.5s linear";
-                jumper.style.bottom = (parseInt(jumper.style.bottom) + jumpHeight) + "px";
+                jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) + jumpHeight) + "px";
                 jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
 
                 setTimeout(() => {
-                    descend(parseInt(jumper.style.bottom));
+                    descend(parseInt(getComputedStyle(jumper).bottom));
                 }, 500); // Time to reach the jump peak
             }
         }
@@ -94,14 +93,14 @@
 
             // Check for the platform to land on
             for(let platform of platforms) {
-                let platformTop = parseInt(platform.style.bottom) + 10; // 10 is platform height
-                if(platformTop < initialTop && (!landingPlatform || platformTop > parseInt(landingPlatform.style.bottom))) {
+                let platformTop = parseInt(getComputedStyle(platform).bottom) + 10; // 10 is platform height
+                if(platformTop < initialTop && (!landingPlatform || platformTop > parseInt(getComputedStyle(landingPlatform).bottom))) {
                     landingPlatform = platform;
                 }
             }
 
             if(landingPlatform) {
-                let newBottom = parseInt(landingPlatform.style.bottom) + 10; // 10 is platform height
+                let newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10; // 10 is platform height
                 jumper.style.bottom = newBottom + "px";
 
                 // Check if jumper reached the jacket
@@ -115,9 +114,9 @@
                 }, 500);
             } else {
                 // If no landing platform is found, continue descending
-                jumper.style.bottom = (parseInt(jumper.style.bottom) - 10) + "px";
+                jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
-                    descend(parseInt(jumper.style.bottom));
+                    descend(parseInt(getComputedStyle(jumper).bottom));
                 }, 100);
             }
         }
