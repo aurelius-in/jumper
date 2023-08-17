@@ -23,6 +23,7 @@
         .platform {
             position: absolute;
             height: 10px;
+            width: 25px; /* Platform width */
             background-color: #2d2d2d; /* Black platforms */
         }
 
@@ -41,9 +42,11 @@
 <body>
     <div id="gameArea" onclick="jump(event)">
         <div class="platform" style="bottom: 0; width: 100%;"></div> <!-- Bottom platform -->
-        <div class="platform" style="bottom: 190px; width: 33%; left: 0;"></div> <!-- Decreased by 10px -->
-        <div class="platform" style="bottom: 370px; width: 40%; left: 65%;"></div> <!-- Decreased by 10px -->
-        <div class="platform" style="bottom: 550px; width: 33%; left: 0;"></div> <!-- Decreased by 10px -->
+        <div class="platform" style="bottom: 180px; left: 0;"></div>
+        <div class="platform" style="bottom: 360px; left: calc(50% - 12.5px);"></div>
+        <div class="platform" style="bottom: 540px; right: 0;"></div>
+        <div class="platform" style="bottom: 720px; left: 0;"></div>
+        <div class="platform" style="bottom: 900px; left: calc(50% - 12.5px);"></div>
         <!-- Add more platforms as necessary -->
 
         <div id="guy"></div>
@@ -52,7 +55,7 @@
     <script>
         let jumper = document.getElementById("guy");
         let isJumping = false;
-        let jumpHeight = 200; // Increased by 10px
+        let jumpHeight = 210; // Slightly adjusted for new platform heights
 
         function jump(event) {
             if (!isJumping) {
@@ -60,7 +63,7 @@
                 let initialLeft = jumper.offsetLeft;
                 let targetX = event.clientX;
                 let direction = (targetX > initialLeft + 32) ? 1 : -1; 
-                let moveBy = direction * 60; // Updated move distance
+                let moveBy = direction * 80; // Adjusted movement distance
 
                 jumper.style.transition = "bottom 0.25s ease-out, left 0.25s linear";
                 jumper.style.bottom = (parseInt(jumper.style.bottom) + jumpHeight) + "px";
@@ -88,13 +91,16 @@
             if(landingPlatform) {
                 let newBottom = parseInt(landingPlatform.style.bottom) + 10; // 10 is platform height
                 jumper.style.bottom = newBottom + "px";
+                setTimeout(() => {
+                    isJumping = false;
+                }, 250);
             } else {
-                jumper.style.bottom = "10px"; // Default bottom
+                // If no landing platform is found, continue descending
+                jumper.style.bottom = (parseInt(jumper.style.bottom) - 10) + "px";
+                setTimeout(() => {
+                    descend(parseInt(jumper.style.bottom));
+                }, 100);
             }
-
-            setTimeout(() => {
-                isJumping = false;
-            }, 250); 
         }
     </script>
 </body>
