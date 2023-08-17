@@ -9,20 +9,20 @@
         body, html {
             height: 100%;
             margin: 0;
+            background-color: #ffffff; /* White background */
         }
 
         #gameArea {
             position: relative;
             width: 100%;
             height: 100%;
-            background-color: #ffffff; /* White background */
         }
 
         .platform {
             position: absolute;
             width: 100%;
             height: 10px;
-            background-color: #2d2d2d;
+            background-color: #2d2d2d; /* Black platforms */
         }
 
         #guy {
@@ -40,6 +40,9 @@
 <body>
     <div id="gameArea" onclick="jump(event)">
         <div class="platform" style="bottom: 0;"></div> <!-- Bottom platform -->
+        <div class="platform" style="bottom: 200px;"></div>
+        <div class="platform" style="bottom: 400px;"></div>
+        <div class="platform" style="bottom: 600px;"></div>
         <!-- Add more platforms as necessary -->
 
         <div id="guy"></div>
@@ -48,7 +51,7 @@
     <script>
         let jumper = document.getElementById("guy");
         let isJumping = false;
-        let jumpHeight = 150; // adjust as needed
+        let jumpHeight = 220; // Increased jump height to clear platforms
 
         function jump(event) {
             if (!isJumping) {
@@ -59,7 +62,7 @@
                 let moveBy = direction * Math.abs(targetX - initialLeft) * 0.2; // Adjust factor as necessary
 
                 jumper.style.transition = "bottom 0.5s ease, left 0.5s ease";
-                jumper.style.bottom = jumpHeight + "px";
+                jumper.style.bottom = (jumper.offsetTop + jumpHeight) + "px";
                 jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
 
                 setTimeout(() => {
