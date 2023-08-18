@@ -56,7 +56,9 @@
 
         #shades {
             background-image: url('shades.png');
-            display: none; 
+            display: none; /* initially hidden */
+            transform: scale(0.5);
+            top: 82px; /* adjusted for the scale, to keep it centered */
         }
 
         @keyframes rainbow {
@@ -161,7 +163,7 @@
                     }, 2000);
                 }
 
-                if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
+                if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + (shades.offsetHeight / 2))) {
                     shades.style.display = "none";
                     setTimeout(() => {
                         window.location.href = "hat.html";
