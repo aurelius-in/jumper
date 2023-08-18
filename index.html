@@ -136,27 +136,27 @@
                 if(landingPlatform.style.bottom === "625px" && jacket.style.display !== "none") {
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
                     jacket.style.display = "none";
+                    jumper.style.transition = "bottom 0.8s ease-in";
+                    jumper.style.bottom = "10px";
 
                     gameArea.style.animation = "rainbow 2s linear";
 
                     setTimeout(() => {
                         gameArea.style.animation = "none";
                         gameArea.style.backgroundImage = "url('bg.png')";
-                        jumper.style.bottom = "10px";
                         shades.style.display = "block"; 
+                        isJumping = false; // re-enable jumping
                     }, 2000);
-                }
-
-                if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
+                } else if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
                     shades.style.display = "none";
                     setTimeout(() => {
                         window.location.href = "hat.html";
                     }, 1000);
+                } else {
+                    setTimeout(() => {
+                        isJumping = false;
+                    }, 400);
                 }
-
-                setTimeout(() => {
-                    isJumping = false;
-                }, 400);
             } else {
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
