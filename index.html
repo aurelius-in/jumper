@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jumping Guy Game</title>
+    <title>Style Jumper</title>
     <style>
         body, html {
             height: 100%;
@@ -15,7 +15,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            background-image: url('bg.jpg');
+            background-image: url('bg.png');
             background-size: cover;
             background-repeat: no-repeat;
         }
@@ -35,39 +35,45 @@
             background-size: cover;
             bottom: 10px;
             left: calc(50% - 32px);
+            transform-origin: center;
+        }
+
+        .flipped {
+            transform: scaleX(-1);
         }
 
         #jacket, #shades {
             position: absolute;
             width: 64px;
             height: 64px;
-            background-size: cover;
+            background-size: 50%; /* 50% scale */
             top: 64px;
             left: calc(50% - 32px);
-            display: none;
         }
 
-        #jacket { background-image: url('jacket.png'); }
-        #shades { background-image: url('shades.png'); }
-
-        .flipped { transform: scaleX(-1); }
-
-        @keyframes flash {
-            0% { background-color: #FFFFFF; }
-            100% { background-color: transparent; }
+        #jacket {
+            background-image: url('jacket.png');
         }
 
-        #celebrateText {
+        #shades {
+            background-image: url('shades.png');
+            display: none; /* initially hidden */
+        }
+
+        #message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 24px;
-            color: gold;
-            font-weight: bold;
+            color: white;
             display: none;
         }
 
+        @keyframes flash {
+            0% { background-color: white; }
+            100% { background-color: transparent; }
+        }
     </style>
 </head>
 
@@ -78,12 +84,12 @@
         <div class="platform" style="bottom: 250px; right: 0;"></div>
         <div class="platform" style="bottom: 375px; left: 0;"></div>
         <div class="platform" style="bottom: 500px; right: 0;"></div>
-        <div class="platform" style="bottom: 625px; left: calc(50% - 33%); background-color: transparent;"></div>
+        <div class="platform" style="bottom: 605px; left: calc(50% - 33%); background-color: transparent;"></div>
 
         <div id="jacket"></div>
         <div id="shades"></div>
         <div id="guy"></div>
-        <div id="celebrateText">Awesome!</div>
+        <div id="message"></div>
     </div>
 
     <script>
@@ -91,17 +97,18 @@
         const jacket = document.getElementById("jacket");
         const shades = document.getElementById("shades");
         const gameArea = document.getElementById("gameArea");
-        const celebrateText = document.getElementById("celebrateText");
+        const messageDiv = document.getElementById("message");
         let isJumping = false;
-        const jumpHeight = 200;  // Increased for a faster jump
 
         function jump(event) {
             if (!isJumping) {
                 isJumping = true;
+                jumper.style.transform = ''; // Reset rotation
+                
                 const initialLeft = jumper.offsetLeft;
                 const targetX = event.clientX;
                 const direction = (targetX > initialLeft + 32) ? 1 : -1;
-                const moveBy = direction * 80;
+                const moveBy = direction * 90; // Increased the jump distance
 
                 if(direction === 1) {
                     jumper.classList.add("flipped");
@@ -109,8 +116,8 @@
                     jumper.classList.remove("flipped");
                 }
 
-                jumper.style.transition = "bottom 0.4s ease-out, left 0.4s linear";  // Shortened for a faster jump
-                jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) + jumpHeight) + "px";
+                jumper.style.transition = "bottom 0.4s ease-out, left 0.4s linear"; // Faster transition
+                jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) + 180) + "px";
                 jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
 
                 setTimeout(() => {
@@ -120,7 +127,8 @@
         }
 
         function descend(initialTop) {
-            jumper.style.transition = "bottom 0.4s ease-in";  // Shortened for a faster descent
+            jumper.style.transition = "bottom 0.4s ease-in"; // Faster descend
+            
             const platforms = document.querySelectorAll('.platform');
             let landingPlatform = null;
 
@@ -135,55 +143,47 @@
                 const newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
                 jumper.style.bottom = newBottom + "px";
 
-                if(landingPlatform.style.bottom === "625px") {
-                    if(jacket.style.display !== "none") {
-                        celebrate("jacket");
-                    } else if(shades.style.display !== "none") {
-                        celebrate("shades");
-                    }
+                if(landingPlatform.style.bottom === "605px" && jacket.style.display !== "none") {
+                    jumper.style.backgroundImage = "url('jacket-guy.png')";
+                    jacket.style.display = "none";
+                    showMessage("Nice Jacket!");
+
+                    setTimeout(() => {
+                        gameArea.style.animation = "flash 1s";
+                        jumper.style.bottom = "10px";
+                        shades.style.display = "block"; 
+                    }, 2000);
+                }
+
+                if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
+                    shades.style.display = "none";
+                    showMessage("Cool Shades!");
+
+                    setTimeout(() => {
+                        gameArea.style.animation = "flash 1s";
+                        jumper.style.bottom = "10px";
+                    }, 2000);
                 }
 
                 setTimeout(() => {
                     isJumping = false;
+                    jumper.style.transform = 'rotate(360deg)'; // Rotation after landing
                 }, 400);
             } else {
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
                     descend(parseInt(getComputedStyle(jumper).bottom));
-                }, 80);  // Shortened for a faster descent
+                }, 80); // Faster descend if no platform to land
             }
         }
 
-        function celebrate(item) {
-            jumper.style.transition = "transform 0.5s ease";
-            jumper.style.transform = "scale(1.2) rotate(360deg)";
-            
-            setTimeout(() => {
-                jumper.style.transform = "scale(1)";
-            }, 500);
-
-            gameArea.style.animation = "flash 0.2s";
-            
-            setTimeout(() => {
-                gameArea.style.animation = "none";
-            }, 200);
-
-            celebrateText.style.display = "block";
+        function showMessage(message) {
+            messageDiv.innerHTML = message;
+            messageDiv.style.display = "block";
 
             setTimeout(() => {
-                celebrateText.style.display = "none";
+                messageDiv.style.display = "none";
             }, 2000);
-
-            if (item === "jacket") {
-                jumper.style.backgroundImage = "url('jacket-guy.png')";
-                jacket.style.display = "none";
-                shades.style.display = "block";
-            } else if (item === "shades") {
-                jumper.style.backgroundImage = "url('shades-guy.png')";
-                shades.style.display = "none";
-                // Transition to the next page
-                window.location.href = 'hat.html';
-            }
         }
 
     </script>
