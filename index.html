@@ -112,10 +112,11 @@
             jumper.style.transition = "bottom 0.4s ease-in";
 
             if(isAfterJacket) {
-                jumper.style.bottom = "10px";  // Drop directly to the bottom
+                jumper.style.bottom = "10px";
                 shades.style.display = "block";
                 isJumping = false;
-                if (jumper.offsetTop <= shades.offsetTop + shades.offsetHeight && jumper.offsetTop + jumper.offsetHeight >= shades.offsetTop) {
+                ascendCount++;  // Increment ascendCount after descending as jacket-guy
+                if (ascendCount >= 2 && jumper.offsetTop <= shades.offsetTop + shades.offsetHeight && jumper.offsetTop + jumper.offsetHeight >= shades.offsetTop) {
                     window.location.href = "hat.html";
                 }
             } else {
@@ -156,3 +157,4 @@
 </body>
 
 </html>
+
