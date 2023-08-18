@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Style Jumper</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playball&display=swap'); /* This is a western style font */
+        @import url('https://fonts.googleapis.com/css2?family=Ranchers&display=swap'); /* Ranchers is a country western style font */
 
         body, html {
             height: 100%;
@@ -44,24 +44,24 @@
         }
 
         #hat {
-    position: absolute;
-    width: 64px;
-    height: 36px; /* Adjusted height for 4:3 aspect ratio */
-    background-image: url('hat-black.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    top: 64px;
-    left: calc(50% - 32px);
-}
+            position: absolute;
+            width: 64px;
+            height: 36px;
+            background-image: url('hat-black.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            top: 64px;
+            left: calc(50% - 32px);
+        }
 
         .winnerText {
             display: none;
             position: absolute;
-            top: 40%;
-            left: 50%;
+            top: 50%; /* centered vertically */
+            left: 50%; /* centered horizontally */
             transform: translate(-50%, -50%);
-            font-family: 'Playball', cursive;
+            font-family: 'Ranchers', cursive; /* Ranchers font */
             font-size: 2rem;
             color: gold;
         }
