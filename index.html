@@ -56,7 +56,7 @@
 
         #shades {
             background-image: url('shades.png');
-            display: none; /* initially hidden */
+            display: none; 
         }
 
         @keyframes rainbow {
@@ -67,6 +67,16 @@
             64% { background-color: blue; }
             80% { background-color: indigo; }
             100% { background-color: violet; }
+        }
+
+        #falling {
+            animation: fall 1s forwards;
+        }
+
+        @keyframes fall {
+            to {
+                bottom: 10px;
+            }
         }
 
     </style>
@@ -136,27 +146,31 @@
                 if(landingPlatform.style.bottom === "625px" && jacket.style.display !== "none") {
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
                     jacket.style.display = "none";
-                    jumper.style.transition = "bottom 0.8s ease-in";
-                    jumper.style.bottom = "10px";
 
                     gameArea.style.animation = "rainbow 2s linear";
 
                     setTimeout(() => {
                         gameArea.style.animation = "none";
                         gameArea.style.backgroundImage = "url('bg.png')";
-                        shades.style.display = "block"; 
-                        isJumping = false; // re-enable jumping
+                        jumper.style.transition = "none";  // Disable the smooth transition
+                        jumper.id = "falling";  // Apply the fall animation
+                        setTimeout(() => {
+                            jumper.id = "guy";  // Reset the ID back to 'guy' after falling animation
+                            shades.style.display = "block"; 
+                        }, 1000);
                     }, 2000);
-                } else if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
+                }
+
+                if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
                     shades.style.display = "none";
                     setTimeout(() => {
                         window.location.href = "hat.html";
                     }, 1000);
-                } else {
-                    setTimeout(() => {
-                        isJumping = false;
-                    }, 400);
                 }
+
+                setTimeout(() => {
+                    isJumping = false;
+                }, 400);
             } else {
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
