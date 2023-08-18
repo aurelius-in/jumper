@@ -45,7 +45,7 @@
             position: absolute;
             width: 64px;
             height: 64px;
-            background-size: cover;
+            background-size: 100% 100%; /* Ensure full visibility */
             top: 64px;
             left: calc(50% - 32px);
         }
@@ -115,6 +115,9 @@
                 jumper.style.bottom = "10px";  // Drop directly to the bottom
                 shades.style.display = "block";
                 isJumping = false;
+                if (jumper.offsetTop <= shades.offsetTop + shades.offsetHeight && jumper.offsetTop + jumper.offsetHeight >= shades.offsetTop) {
+                    window.location.href = "hat.html";
+                }
             } else {
                 const platforms = document.querySelectorAll('.platform');
                 let landingPlatform = null;
@@ -141,12 +144,6 @@
                         isJumping = false;
                     }
 
-                    if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
-                        shades.style.display = "none";
-                        setTimeout(() => {
-                            window.location.href = "hat.html";
-                        }, 1000);
-                    }
                 } else {
                     jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                     setTimeout(() => {
