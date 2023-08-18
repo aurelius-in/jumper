@@ -57,8 +57,8 @@
         #shades {
             background-image: url('shades.png');
             display: none; /* initially hidden */
-            transform: scale(0.5);
-            top: 82px; /* adjusted for the scale, to keep it centered */
+            transform: scale(0.5); /* 50% scale */
+            left: calc(50% - 16px); /* adjust left for 50% scale */
         }
 
         @keyframes rainbow {
@@ -69,16 +69,6 @@
             64% { background-color: blue; }
             80% { background-color: indigo; }
             100% { background-color: violet; }
-        }
-
-        #falling {
-            animation: fall 1s forwards;
-        }
-
-        @keyframes fall {
-            to {
-                bottom: 10px;
-            }
         }
 
     </style>
@@ -124,12 +114,12 @@
                 jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
 
                 setTimeout(() => {
-                    descend(parseInt(getComputedStyle(jumper).bottom));
+                    descend(parseInt(getComputedStyle(jumper).bottom), false);
                 }, 400);
             }
         }
 
-        function descend(initialTop) {
+        function descend(initialTop, isAfterJacket) {
             jumper.style.transition = "bottom 0.4s ease-in";
             const platforms = document.querySelectorAll('.platform');
             let landingPlatform = null;
@@ -145,42 +135,37 @@
                 const newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
                 jumper.style.bottom = newBottom + "px";
 
-                if(landingPlatform.style.bottom === "625px" && jacket.style.display !== "none") {
+                if(landingPlatform.style.bottom === "625px" && jacket.style.display !== "none" && !isAfterJacket) {
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
                     jacket.style.display = "none";
 
-                    gameArea.style.animation = "rainbow 2s linear";
+                    setTimeout(() => {
+                        descend(jumper.offsetTop, true);
+                    }, 500);
+                } else if (isAfterJacket) {
+                    gameArea.style.animation = "rainbow 6s linear infinite";
 
                     setTimeout(() => {
                         gameArea.style.animation = "none";
                         gameArea.style.backgroundImage = "url('bg.png')";
-                        jumper.style.transition = "none";  // Disable the smooth transition
-                        jumper.id = "falling";  // Apply the fall animation
-                        setTimeout(() => {
-                            jumper.id = "guy";  // Reset the ID back to 'guy' after falling animation
-                            shades.style.display = "block"; 
-                        }, 1000);
-                    }, 2000);
+                        shades.style.display = "block";
+                        isJumping = false;
+                    }, 18000); 
                 }
 
-                if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + (shades.offsetHeight / 2))) {
+                if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
                     shades.style.display = "none";
                     setTimeout(() => {
                         window.location.href = "hat.html";
                     }, 1000);
                 }
-
-                setTimeout(() => {
-                    isJumping = false;
-                }, 400);
             } else {
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
-                    descend(parseInt(getComputedStyle(jumper).bottom));
+                    descend(parseInt(getComputedStyle(jumper).bottom), isAfterJacket);
                 }, 80);
             }
         }
-
     </script>
 </body>
 
