@@ -28,8 +28,8 @@
         }
 
         .platform:nth-child(7) {
-    background-color: transparent;
-}
+            background-color: transparent;
+        }
 
         #guy {
             position: absolute;
@@ -47,21 +47,16 @@
 
         #jacket, #shades {
             position: absolute;
-            background-size: 100% 100%; /* Ensure full visibility */
+            background-size: 100% 100%;
             left: calc(50% - 32px);
         }
-        
-        #jacket {
-    top: calc(100% - 600px - 10px - 64px);
-    background-image: url('jacket.png');
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    background-size: 100% 100%;
-    top: 164px;
-    left: calc(50% - 32px);
-}
 
+        #jacket {
+            background-image: url('jacket.png');
+            width: 64px;
+            height: 64px;
+            top: 164px;
+        }
 
         #shades {
             background-image: url('shades.png');
@@ -69,7 +64,7 @@
             width: 36px;
             display: none; /* initially hidden */
             transform: scale(0.5); /* 50% scale */
-            left: calc(50% - 16px); /* adjust left for 50% scale */
+            left: calc(50% - 18px); /* adjust left for 50% scale */
         }
 
     </style>
@@ -89,62 +84,41 @@
         <div id="shades"></div>
         <div id="guy"></div>
     </div>
-<script>
+    <script>
+        const jumper = document.getElementById("guy");
+        const jacket = document.getElementById("jacket");
+        const shades = document.getElementById("shades");
+        let isJumping = false;
+        let ascendCount = 0;
+        let startTime = new Date().getTime();
 
-    
-    const jumper = document.getElementById("guy");
-    const jacket = document.getElementById("jacket");
-    const shades = document.getElementById("shades");
-    let isJumping = false;
-    let ascendCount = 0;
-    let startTime = new Date().getTime();
-    let hasDescended = false;
+        function jump(event) {
+            if (!isJumping) {
+                isJumping = true;
+                const initialLeft = jumper.offsetLeft;
+                const targetX = event.clientX;
+                const direction = (targetX > initialLeft + 32) ? 1 : -1;
+                const moveBy = direction * 90;
 
-    function jump(event) {
-        if (!isJumping) {
-            isJumping = true;
-            const initialLeft = jumper.offsetLeft;
-            const targetX = event.clientX;
-            const direction = (targetX > initialLeft + 32) ? 1 : -1;
-            const moveBy = direction * 90;
+                if(direction === 1) {
+                    jumper.classList.add("flipped");
+                } else {
+                    jumper.classList.remove("flipped");
+                }
 
-            if(direction === 1) {
-                jumper.classList.add("flipped");
-            } else {
-                jumper.classList.remove("flipped");
+                jumper.style.transition = "bottom 0.4s ease-out, left 0.4s linear";
+                jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) + 180) + "px";
+                jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
+
+                setTimeout(() => {
+                    descend(parseInt(getComputedStyle(jumper).bottom));
+                }, 400);
             }
-
-            jumper.style.transition = "bottom 0.4s ease-out, left 0.4s linear";
-            jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) + 180) + "px";
-            jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
-
-            setTimeout(() => {
-                descend(parseInt(getComputedStyle(jumper).bottom), false);
-            }, 400);
         }
-    }
 
-    function descend(initialTop, isAfterJacket) {
-        hasDescended = true;
-        jumper.style.transition = "bottom 0.4s ease-in";
+        function descend(initialTop) {
+            jumper.style.transition = "bottom 0.4s ease-in";
 
-        if(isAfterJacket) {
-            jumper.style.bottom = "10px";
-            shades.style.display = "block";
-            isJumping = false;
-
-            if (hasDescended) {
-                ascendCount++;  
-                hasDescended = false;
-            }
-
-            let currentTime = new Date().getTime();
-            let elapsedTime = (currentTime - startTime) / 1000;
-
-            if (ascendCount >= 1 && elapsedTime > 10 && jumper.offsetTop <= shades.offsetTop + shades.offsetHeight && jumper.offsetTop + jumper.offsetHeight >= shades.offsetTop) {
-                window.location.href = "hat.html";
-            }
-        } else {
             const platforms = document.querySelectorAll('.platform');
             let landingPlatform = null;
 
@@ -155,30 +129,41 @@
                 }
             }
 
+            if (jacket.style.display !== "none" &&
+                jumper.offsetTop + jumper.offsetHeight >= jacket.offsetTop &&
+                jumper.offsetTop <= jacket.offsetTop + jacket.offsetHeight &&
+                jumper.offsetLeft + jumper.offsetWidth >= jacket.offsetLeft &&
+                jumper.offsetLeft <= jacket.offsetLeft + jacket.offsetWidth) {
+                
+                jumper.style.backgroundImage = "url('jacket-guy.png')";
+                jacket.style.display = "none";
+                setTimeout(() => {
+                    shades.style.display = "block";
+                }, 500);
+            }
+
             if(landingPlatform) {
                 const newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
                 jumper.style.bottom = newBottom + "px";
+                isJumping = false;
+                
+                if (landingPlatform.style.bottom === "600px" && shades.style.display === "block") {
+                    let currentTime = new Date().getTime();
+                    let elapsedTime = (currentTime - startTime) / 1000;
 
-                if(landingPlatform.style.bottom === "600px" && jacket.style.display !== "none") {
-                    jumper.style.backgroundImage = "url('jacket-guy.png')";
-                    jacket.style.display = "none";
-
-                    setTimeout(() => {
-                        descend(jumper.offsetTop, true);
-                    }, 500);
-                } else {
-                    isJumping = false;
+                    if (ascendCount >= 1 && elapsedTime > 10 && jumper.offsetTop <= shades.offsetTop + shades.offsetHeight && jumper.offsetTop + jumper.offsetHeight >= shades.offsetTop) {
+                        window.location.href = "hat.html";
+                    }
                 }
 
             } else {
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
-                    descend(parseInt(getComputedStyle(jumper).bottom), isAfterJacket);
+                    descend(parseInt(getComputedStyle(jumper).bottom));
                 }, 80);
             }
         }
-    }
-</script>
+    </script>
 </body>
 
 </html>
