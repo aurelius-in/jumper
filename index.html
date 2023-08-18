@@ -41,27 +41,14 @@
             transform: scaleX(-1);
         }
 
-        #jacket, #shades {
-            position: absolute;
-            left: calc(50% - 32px); 
-        }
-
         #jacket {
+            position: absolute;
             width: 64px;
             height: 64px;
             background-image: url('jacket.png');
             background-size: cover;
             top: 64px;
-        }
-
-        #shades {
-            display: none; 
-            width: 32px;
-            height: 15px;
-            background-image: url('shades.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            top: 86px; 
+            left: calc(50% - 32px);
         }
 
         @keyframes rainbow {
@@ -87,14 +74,12 @@
         <div class="platform" style="bottom: 605px; left: calc(50% - 33%); background-color: transparent;"></div>
 
         <div id="jacket"></div>
-        <div id="shades"></div>
         <div id="guy"></div>
     </div>
 
     <script>
         const jumper = document.getElementById("guy");
         const jacket = document.getElementById("jacket");
-        const shades = document.getElementById("shades");
         const gameArea = document.getElementById("gameArea");
         let isJumping = false;
         const jumpHeight = 160;
@@ -124,60 +109,46 @@
             }
         }
 
-function descend(initialTop) {
-    jumper.style.transition = "bottom 0.5s ease-in";
-    const platforms = document.querySelectorAll('.platform');
-    let landingPlatform = null;
+        function descend(initialTop) {
+            jumper.style.transition = "bottom 0.5s ease-in";
+            const platforms = document.querySelectorAll('.platform');
+            let landingPlatform = null;
 
-    for(let platform of platforms) {
-        const platformTop = parseInt(getComputedStyle(platform).bottom) + 10;
-        if(platformTop < initialTop && (!landingPlatform || platformTop > parseInt(getComputedStyle(landingPlatform).bottom))) {
-            landingPlatform = platform;
-        }
-    }
+            for(let platform of platforms) {
+                const platformTop = parseInt(getComputedStyle(platform).bottom) + 10;
+                if(platformTop < initialTop && (!landingPlatform || platformTop > parseInt(getComputedStyle(landingPlatform).bottom))) {
+                    landingPlatform = platform;
+                }
+            }
 
-    if(landingPlatform) {
-        const newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
-        jumper.style.bottom = newBottom + "px";
+            if(landingPlatform) {
+                const newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
+                jumper.style.bottom = newBottom + "px";
 
-        if(landingPlatform.style.bottom === "605px" && jacket.style.display !== "none") {
-            jumper.style.backgroundImage = "url('jacket-guy.png')";
-            jacket.style.display = "none";
-            hasJacket = true;
-            gameArea.style.animation = "rainbow 3s linear";
+                if(landingPlatform.style.bottom === "605px" && jacket.style.display !== "none") {
+                    jumper.style.backgroundImage = "url('jacket-guy.png')";
+                    jacket.style.display = "none";
+                    hasJacket = true;
+                    gameArea.style.animation = "rainbow 3s linear";
 
-            setTimeout(() => {
-                gameArea.style.animation = "none";
-                gameArea.style.backgroundImage = "url('bg.jpg')";
-                jumper.style.bottom = "10px";
+                    setTimeout(() => {
+                        gameArea.style.animation = "none";
+                        gameArea.style.backgroundImage = "url('bg.jpg')";
+                        jumper.style.bottom = "10px";
+                    }, 3000);
+                }
+
                 setTimeout(() => {
-                    shades.style.display = "block";
-                }, 2000);
-            }, 3000);
+                    isJumping = false;
+                }, 500);
+            } else {
+                jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
+                setTimeout(() => {
+                    descend(parseInt(getComputedStyle(jumper).bottom));
+                }, 100);
+            }
         }
 
-        // Corrected this part to only transform if both the conditions are met.
-        if(hasJacket && landingPlatform.style.bottom === "605px" && shades.style.display !== "none") {
-            jumper.style.backgroundImage = "url('shades-guy.png')";
-            shades.style.display = "none";
-        }
-
-        setTimeout(() => {
-            isJumping = false;
-        }, 500);
-    } else {
-        jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
-        setTimeout(() => {
-            descend(parseInt(getComputedStyle(jumper).bottom));
-        }, 100);
-    }
-}
-
-if(hasJacket && landingPlatform.style.bottom === "605px" && shades.style.display !== "none") {
-    jumper.style.backgroundImage = "url('shades-guy.png')";
-    shades.style.display = "none";
-    window.location.href = "hat.html"; // Redirect to the new game level
-}
     </script>
 </body>
 
