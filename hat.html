@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumping Guy Game - Hat Edition</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playball&display=swap'); /* This is a western style font */
+
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-image: url('hat-bg.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .platform {
+            position: absolute;
+            height: 10px;
+            width: 66%;
+            background-color: #2d2d2d;
+        }
+
+        #guy {
+            position: absolute;
+            width: 64px;
+            height: 128px;
+            background-image: url('shades-guy.png');
+            background-size: cover;
+            bottom: 10px;
+            left: calc(50% - 32px);
+        }
+
+        .flipped {
+            transform: scaleX(-1);
+        }
+
+        #hat {
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            background-image: url('hat.png');
+            background-size: cover;
+            top: 64px;
+            left: calc(50% - 32px);
+        }
+
+        .winnerText {
+            display: none;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Playball', cursive;
+            font-size: 2rem;
+            color: gold;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="gameArea" onclick="jump(event)">
+        <div class="platform" style="bottom: 0; width: 100%;"></div>
+        <div class="platform" style="bottom: 125px; left: 0;"></div>
+        <div class="platform" style="bottom: 250px; right: 0;"></div>
+        <div class="platform" style="bottom: 375px; left: 0;"></div>
+        <div class="platform" style="bottom: 500px; right: 0;"></div>
+        <div class="platform" id="hatPlatform" style="bottom: 605px; left: calc(50% - 33%); background-color: transparent;"></div>
+
+        <div id="hat"></div>
+        <div id="guy"></div>
+        <div class="winnerText">You're a winner! Dressed to kill!</div>
+    </div>
+
+    <script>
+        const jumper = document.getElementById("guy");
+        const hat = document.getElementById("hat");
+        const hatPlatform = document.getElementById("hatPlatform");
+        const gameArea = document.getElementById("gameArea");
+        let isJumping = false;
+        const jumpHeight = 160;
+        let hasHat = false;
+
+        function jump(event) {
+            if (!isJumping) {
+                isJumping = true;
+                const initialLeft = jumper.offsetLeft;
+                const targetX = event.clientX;
+                const direction = (targetX > initialLeft + 32) ? 1 : -1;
+                const moveBy = direction * 80;
+
+                if(direction === 1) {
+                    jumper.classList.add("flipped");
+                } else {
+                    jumper.classList.remove("flipped");
+                }
+
+                jumper.style.transition = "bottom 0.5s ease-out, left 0.5s linear";
+                jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) + jumpHeight) + "px";
+                jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
+
+                setTimeout(() => {
+                    descend(parseInt(getComputedStyle(jumper).bottom));
+                }, 500);
+            }
+        }
+
+        function descend(initialTop) {
+            jumper.style.transition = "bottom 0.5s ease-in";
+            const platforms = document.querySelectorAll('.platform');
+            let landingPlatform = null;
+
+            for(let platform of platforms) {
+                const platformTop = parseInt(getComputedStyle(platform).bottom) + 10;
+                if(platformTop < initialTop && (!landingPlatform || platformTop > parseInt(getComputedStyle(landingPlatform).bottom))) {
+                    landingPlatform = platform;
+                }
+            }
+
+            if(landingPlatform) {
+                const newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
+                jumper.style.bottom = newBottom + "px";
+
+                if(landingPlatform.id === "hatPlatform" && hat.style.display !== "none") {
+                    jumper.style.backgroundImage = "url('hat-guy.png')";
+                    hat.style.display = "none";
+                    hasHat = true;
+                    hatPlatform.style.display = "none";
+
+                    setTimeout(() => {
+                        jumper.style.transition = "width 2s, height 2s";
+                        jumper.style.width = "100%";
+                        jumper.style.height = "100%";
+                        jumper.style.left = "0";
+                        jumper.style.bottom = "0";
+                        document.querySelector('.winnerText').style.display = "block";
+                    }, 1000);
+                }
+
+                setTimeout(() => {
+                    isJumping = false;
+                }, 500);
+            } else {
+                jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
+                setTimeout(() => {
+                    descend(parseInt(getComputedStyle(jumper).bottom));
+                }, 100);
+            }
+        }
+
+    </script>
+</body>
+
+</html>
