@@ -44,17 +44,16 @@
         }
 
         #hat {
-            position: absolute;
-            width: 64px;
-            height: 64px;
-            background-image: url('hat.png');
-            /* background-size: cover; */
-            top: 64px;
-            border: 1px solid red;
+    position: absolute;
+    width: 64px;
+    height: 48px; /* Adjusted height for 4:3 aspect ratio */
+    background-image: url('hat.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    top: 64px;
+    left: calc(50% - 32px);
 }
-
-            left: calc(50% - 32px);
-        }
 
         .winnerText {
             display: none;
