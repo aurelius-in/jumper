@@ -60,10 +60,11 @@
 
         #shades {
             background-image: url('shades.png');
-            height: 24px;
-            width: 56px;
-            display: none; /* initially hidden */
-            left: calc(50% - 18px); /* adjust left for 50% scale */
+            height: 22px;
+            width: 48px;
+            display: none; 
+            bottom: 600px;  /* Position the shades right on the highest platform */
+            left: calc(50% - 24px); 
         }
 
     </style>
@@ -88,8 +89,6 @@
         const jacket = document.getElementById("jacket");
         const shades = document.getElementById("shades");
         let isJumping = false;
-        let ascendCount = 0;
-        let startTime = new Date().getTime();
 
         function jump(event) {
             if (!isJumping) {
@@ -146,15 +145,10 @@
                 jumper.style.bottom = newBottom + "px";
                 isJumping = false;
                 
+                // Check if jumper landed on the highest platform with the shades visible
                 if (landingPlatform.style.bottom === "600px" && shades.style.display === "block") {
-                    let currentTime = new Date().getTime();
-                    let elapsedTime = (currentTime - startTime) / 1000;
-
-                    if (ascendCount >= 1 && elapsedTime > 10 && jumper.offsetTop <= shades.offsetTop + shades.offsetHeight && jumper.offsetTop + jumper.offsetHeight >= shades.offsetTop) {
-                        window.location.href = "hat.html";
-                    }
+                    window.location.href = "hat.html";
                 }
-
             } else {
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
