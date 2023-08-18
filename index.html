@@ -35,7 +35,6 @@
             background-size: cover;
             bottom: 10px;
             left: calc(50% - 32px);
-            transform-origin: center;
         }
 
         .flipped {
@@ -46,7 +45,7 @@
             position: absolute;
             width: 64px;
             height: 64px;
-            background-size: 50%; /* 50% scale */
+            background-size: cover;
             top: 64px;
             left: calc(50% - 32px);
         }
@@ -60,20 +59,16 @@
             display: none; /* initially hidden */
         }
 
-        #message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: white;
-            display: none;
+        @keyframes rainbow {
+            0% { background-color: red; }
+            16% { background-color: orange; }
+            32% { background-color: yellow; }
+            48% { background-color: green; }
+            64% { background-color: blue; }
+            80% { background-color: indigo; }
+            100% { background-color: violet; }
         }
 
-        @keyframes flash {
-            0% { background-color: white; }
-            100% { background-color: transparent; }
-        }
     </style>
 </head>
 
@@ -84,12 +79,11 @@
         <div class="platform" style="bottom: 250px; right: 0;"></div>
         <div class="platform" style="bottom: 375px; left: 0;"></div>
         <div class="platform" style="bottom: 500px; right: 0;"></div>
-        <div class="platform" style="bottom: 605px; left: calc(50% - 33%); background-color: transparent;"></div>
+        <div class="platform" style="bottom: 625px; left: calc(50% - 33%);"></div>
 
         <div id="jacket"></div>
         <div id="shades"></div>
         <div id="guy"></div>
-        <div id="message"></div>
     </div>
 
     <script>
@@ -97,18 +91,15 @@
         const jacket = document.getElementById("jacket");
         const shades = document.getElementById("shades");
         const gameArea = document.getElementById("gameArea");
-        const messageDiv = document.getElementById("message");
         let isJumping = false;
 
         function jump(event) {
             if (!isJumping) {
                 isJumping = true;
-                jumper.style.transform = ''; // Reset rotation
-                
                 const initialLeft = jumper.offsetLeft;
                 const targetX = event.clientX;
                 const direction = (targetX > initialLeft + 32) ? 1 : -1;
-                const moveBy = direction * 90; // Increased the jump distance
+                const moveBy = direction * 90;
 
                 if(direction === 1) {
                     jumper.classList.add("flipped");
@@ -116,7 +107,7 @@
                     jumper.classList.remove("flipped");
                 }
 
-                jumper.style.transition = "bottom 0.4s ease-out, left 0.4s linear"; // Faster transition
+                jumper.style.transition = "bottom 0.4s ease-out, left 0.4s linear";
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) + 180) + "px";
                 jumper.style.left = (jumper.offsetLeft + moveBy) + "px";
 
@@ -127,8 +118,7 @@
         }
 
         function descend(initialTop) {
-            jumper.style.transition = "bottom 0.4s ease-in"; // Faster descend
-            
+            jumper.style.transition = "bottom 0.4s ease-in";
             const platforms = document.querySelectorAll('.platform');
             let landingPlatform = null;
 
@@ -143,13 +133,15 @@
                 const newBottom = parseInt(getComputedStyle(landingPlatform).bottom) + 10;
                 jumper.style.bottom = newBottom + "px";
 
-                if(landingPlatform.style.bottom === "605px" && jacket.style.display !== "none") {
+                if(landingPlatform.style.bottom === "625px" && jacket.style.display !== "none") {
                     jumper.style.backgroundImage = "url('jacket-guy.png')";
                     jacket.style.display = "none";
-                    showMessage("Nice Jacket!");
+
+                    gameArea.style.animation = "rainbow 2s linear";
 
                     setTimeout(() => {
-                        gameArea.style.animation = "flash 1s";
+                        gameArea.style.animation = "none";
+                        gameArea.style.backgroundImage = "url('bg.png')";
                         jumper.style.bottom = "10px";
                         shades.style.display = "block"; 
                     }, 2000);
@@ -157,33 +149,20 @@
 
                 if (parseInt(jumper.style.bottom) === (parseInt(getComputedStyle(shades).bottom) + shades.offsetHeight)) {
                     shades.style.display = "none";
-                    showMessage("Cool Shades!");
-
                     setTimeout(() => {
-                        gameArea.style.animation = "flash 1s";
-                        jumper.style.bottom = "10px";
-                    }, 2000);
+                        window.location.href = "hat.html";
+                    }, 1000);
                 }
 
                 setTimeout(() => {
                     isJumping = false;
-                    jumper.style.transform = 'rotate(360deg)'; // Rotation after landing
                 }, 400);
             } else {
                 jumper.style.bottom = (parseInt(getComputedStyle(jumper).bottom) - 10) + "px";
                 setTimeout(() => {
                     descend(parseInt(getComputedStyle(jumper).bottom));
-                }, 80); // Faster descend if no platform to land
+                }, 80);
             }
-        }
-
-        function showMessage(message) {
-            messageDiv.innerHTML = message;
-            messageDiv.style.display = "block";
-
-            setTimeout(() => {
-                messageDiv.style.display = "none";
-            }, 2000);
         }
 
     </script>
