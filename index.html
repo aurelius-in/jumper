@@ -43,10 +43,7 @@
 
         #jacket, #shades {
             position: absolute;
-            width: 64px;
-            height: 64px;
             background-size: 100% 100%; /* Ensure full visibility */
-            top: 64px;
             left: calc(50% - 32px);
         }
 
@@ -71,7 +68,7 @@
         <div class="platform" style="bottom: 250px; right: 0;"></div>
         <div class="platform" style="bottom: 375px; left: 0;"></div>
         <div class="platform" style="bottom: 500px; right: 0;"></div>
-        <div class="platform" style="bottom: 625px; left: calc(50% - 33%);"></div>
+        <div class="platform" style="bottom: 600px; left: calc(50% - 33%);"></div>
 
         <div id="jacket"></div>
         <div id="shades"></div>
@@ -127,7 +124,7 @@
             let currentTime = new Date().getTime();
             let elapsedTime = (currentTime - startTime) / 1000;
 
-            if (ascendCount >= 2 && elapsedTime > 12 && jumper.offsetTop <= shades.offsetTop + shades.offsetHeight && jumper.offsetTop + jumper.offsetHeight >= shades.offsetTop) {
+            if (ascendCount >= 1 && elapsedTime > 10 && jumper.offsetTop <= shades.offsetTop + shades.offsetHeight && jumper.offsetTop + jumper.offsetHeight >= shades.offsetTop) {
                 window.location.href = "hat.html";
             }
         } else {
